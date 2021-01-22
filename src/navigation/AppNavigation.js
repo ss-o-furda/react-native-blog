@@ -74,16 +74,70 @@ const BottomNavigator =
         },
       });
 
-const MainNavigator = createDrawerNavigator({
-  PostTabs: {
-    screen: BottomNavigator,
+const AboutNavigator = createStackNavigator(
+  {
+    About: AboutScreen,
   },
-  About: {
-    screen: AboutScreen,
+  navigatorOptions
+);
+
+const CreateNavigator = createStackNavigator(
+  {
+    Create: CreateScreen,
   },
-  Create: {
-    screen: CreateScreen,
+  navigatorOptions
+);
+
+const MainNavigator = createDrawerNavigator(
+  {
+    PostTabs: {
+      screen: BottomNavigator,
+      navigationOptions: {
+        drawerLabel: "Main Page",
+        drawerIcon: (
+          <Ionicons
+            name="ios-home-outline"
+            size={24}
+            color={THEME.MAIN_COLOR}
+          />
+        ),
+      },
+    },
+    Create: {
+      screen: CreateNavigator,
+      navigationOptions: {
+        drawerLabel: "Create New Post",
+        drawerIcon: (
+          <Ionicons
+            name="ios-create-outline"
+            size={24}
+            color={THEME.MAIN_COLOR}
+          />
+        ),
+      },
+    },
+    About: {
+      screen: AboutNavigator,
+      navigationOptions: {
+        drawerLabel: "About Me",
+        drawerIcon: (
+          <Ionicons
+            name="ios-information-circle-outline"
+            size={24}
+            color={THEME.MAIN_COLOR}
+          />
+        ),
+      },
+    },
   },
-});
+  {
+    contentOptions: {
+      activeTintColor: THEME.MAIN_COLOR,
+      labelStyle: {
+        fontFamily: "open-bold",
+      },
+    },
+  }
+);
 
 export const AppNavigation = createAppContainer(MainNavigator);
