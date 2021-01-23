@@ -1,8 +1,15 @@
-import React from "react";
-import { View, Text, StyleSheet, Linking } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Linking,
+  ActivityIndicator,
+  AppState,
+} from "react-native";
 import Clipboard from "expo-clipboard";
 import FlashMessage from "react-native-flash-message";
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import {
   Ionicons,
@@ -13,6 +20,16 @@ import { AppHeaderIcon } from "../components/AppHeaderIcon";
 import { THEME } from "../Theme";
 
 export const AboutScreen = () => {
+  const [appState, setAppState] = useState("active");
+
+  useEffect(() => {
+    AppState.addEventListener("change", setAppState);
+
+    return () => {
+      AppState.removeEventListener("change", setAppState);
+    };
+  }, []);
+
   const openFB = async () => {
     const fbAppUrl = "fb://profile/100003366340830";
     const fbBrowserUrl = "https://facebook.com/profile.php?id=100003366340830";
@@ -91,7 +108,14 @@ export const AboutScreen = () => {
   return (
     <View style={styles.wrapper}>
       <View style={styles.top}>
-        <Text style={styles.top}>Hi there :)</Text>
+        {appState !== "active" ? (
+          <View style={styles.top}>
+            <ActivityIndicator size="large" color={THEME.MAIN_COLOR} />
+            <Text style={{ ...styles.top, fontSize: 18 }}>app loading...</Text>
+          </View>
+        ) : (
+          <Text style={styles.top}>Hi there :)</Text>
+        )}
       </View>
       <View style={styles.center}>
         <Text style={styles.center}>
@@ -155,7 +179,9 @@ AboutScreen.navigationOptions = ({ navigation }) => ({
       <Item
         title="Toggle drawer"
         iconName="ios-menu"
-        onPress={() => navigation.toggleDrawer()}
+        onPress={() => {
+          navigation.toggleDrawer();
+        }}
       />
     </HeaderButtons>
   ),
